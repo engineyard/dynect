@@ -1,1 +1,1 @@
-# dynect
+# Dynect Client
