@@ -12,6 +12,16 @@ describe 'cnames' do
     expect(cname).to be
   end
 
+  it 'can publish a cname' do
+    cname = make_cname()
+    expect(cname).to be
+
+    data = client.publish_zone('zone' => cname.zone)
+
+    expect(data.body['data']).to be
+    expect(data.body['data']['serial']).to be
+  end
+
   it 'can get a cname' do
     fqdn = rando_fqdn('ey.io')
     make_cname(fqdn: fqdn, zone: 'ey.io')

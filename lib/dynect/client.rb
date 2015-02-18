@@ -7,6 +7,7 @@ class Dynect::Client < Cistern::Service
   request    :get_cname
   request    :create_cname
   request    :destroy_cname
+  request    :publish_zone
   collection :cnames
 
   requires :customer_name, :user_name, :password
