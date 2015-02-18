@@ -3,12 +3,13 @@ class Dynect::Client
     def publish_zone(params={})
       refresh_token
 
+      zone = params['zone']
       data = {"publish" => "true"}
 
       request(
         body:   data.to_json,
-        path:   "/REST/CNAMERecord/#{zone}/#{fqdn}",
-        method: 'POST'
+        path:   "/REST/Zone/#{zone}",
+        method: 'PUT'
       )
     end
   end
