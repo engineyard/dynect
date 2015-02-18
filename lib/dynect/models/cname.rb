@@ -8,6 +8,10 @@ class Dynect::Client::Cname < Cistern::Model
   attribute :rdata
   attribute :target
 
+  def destroy
+    connection.destroy_cname({'zone' => zone, 'fqdn' => fqdn}).body["data"]
+  end
+
   def save
     requires :zone, :fqdn, :target
 

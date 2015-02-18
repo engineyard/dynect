@@ -13,23 +13,17 @@ class Dynect::Client
 
   class Mock
     def destroy_cname(params={})
-      cname = self.data[:cname][zone][fqdn]
+      zone = params['zone']
+      fqdn = params['fqdn']
+
+      cname = self.data[:cnames][zone][fqdn]
       unless cname
         response(
-          :body => {"error" => "Couldn't find Cname #{fqdn}}"},
           :status => 404
         )
       end
 
-      data = {
-        "data" => {
-          "zone" => data['zone'],
-          "ttl" => 60,
-          "fqdn" => data['fqdn'],
-          "record_type" => "CNAME",
-          "record_id" => 0,
-        }
-      }
+      self.data[:cnames][zone].delete(fqdn)
 
       response(
         body: data,

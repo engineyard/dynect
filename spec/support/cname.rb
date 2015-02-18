@@ -10,7 +10,7 @@ module CnameHelper
   end
 
   def rando_fqdn(zone = nil)
-    zone = Faker::Internet.domain_name unless zone
+    zone ||= Faker::Internet.domain_name
 
     "#{Faker::Internet.domain_word}.#{zone}"
   end
