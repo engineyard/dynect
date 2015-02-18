@@ -11,14 +11,16 @@ class Dynect::Client
 
   class Mock
     def create_token(params={})
-      unless [:customer_name, :user_name, :password].all? {s.params.key?}
-        return response(
-          :body   => {"error" => "missing authentication params"},
-          :status => 404,
-        )
+      ['customer_name', 'user_name', 'password'].each do |p|
+        unless params[p]
+          return response(
+            :body   => {"error" => "missing authentication param #{p}"},
+            :status => 404
+          )
+        end
       end
 
-      token = SecureRandom.hash(10)
+      token = SecureRandom.hash()
 
       self.data[:tokens].push(token)
 

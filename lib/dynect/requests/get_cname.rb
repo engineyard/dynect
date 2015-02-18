@@ -26,16 +26,6 @@ class Dynect::Client
 
       data = self.data[:cnames][zone][fqdn]
 
-      data = {
-        "data" => {
-          "zone" => data['zone'],
-          "ttl" => 60,
-          "fqdn" => data['fqdn'],
-          "record_type" => "CNAME",
-          "record_id" => 0,
-        }
-      }
-
       response(
         body: data,
         status: 200

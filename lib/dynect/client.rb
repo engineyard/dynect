@@ -7,7 +7,6 @@ class Dynect::Client < Cistern::Service
   request    :get_cname
   request    :create_cname
   request    :destroy_cname
-  request    :get_cnames
   collection :cnames
 
   requires :customer_name, :user_name, :password
@@ -98,8 +97,27 @@ class Dynect::Client < Cistern::Service
   end
 
   class Mock
-    def initialize(options={})
-      @url = options[:url] || "http://fake-dyn-api.localhost"
+    attr_reader :connection
+    attr_accessor :token
+
+    def initialize(opts={})
+      @url = opts[:url] || "http://fake-dyn-api.localhost"
+
+      @customer_name = opts[:customer_name]
+      @user_name = opts[:user_name]
+      @password = opts[:password]
+
+      refresh_token
+    end
+
+    def refresh_token
+      response = create_token({
+        'customer_name' => @customer_name,
+        'user_name' => @user_name,
+        'password' => @password
+      }).body
+
+      @token = response['data']['token']
     end
 
     def self.data
@@ -125,6 +143,8 @@ class Dynect::Client < Cistern::Service
       headers = {
         "Content-Type" => "application/json; charset=utf-8"
       }.merge(options[:headers] || {})
+
+      headers.merge!('Auth-Token' => @token) if @token
 
       Dynect::Response.new(
         :status  => status,

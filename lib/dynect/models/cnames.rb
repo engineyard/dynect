@@ -1,5 +1,5 @@
-class Dynect::Cnames < Cistern::Collection
-  include Collection
+class Dynect::Client::Cnames < Cistern::Collection
+  include Dynect::Collection
 
   model Dynect::Client::Cname
 

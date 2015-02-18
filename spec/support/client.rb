@@ -6,8 +6,6 @@ module ClientHelper
       password: 'password'
     )
 
-#    merged_attributes.merge!(logger: Logger.new(STDOUT)) if ENV['VERBOSE']
-
     Dynect::Client.new(merged_attributes)
   end
 end

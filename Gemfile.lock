@@ -13,6 +13,7 @@ GEM
     addressable (2.3.7)
     awesome_print (1.6.1)
     cistern (0.11.2)
+    coderay (1.1.0)
     diff-lcs (1.2.5)
     faker (1.4.3)
       i18n (~> 0.5)
@@ -21,7 +22,12 @@ GEM
     faraday_middleware (0.9.1)
       faraday (>= 0.7.4, < 0.10)
     i18n (0.7.0)
+    method_source (0.8.2)
     multipart-post (2.0.0)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
     rspec (3.2.0)
       rspec-core (~> 3.2.0)
       rspec-expectations (~> 3.2.0)
@@ -35,6 +41,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
     rspec-support (3.2.1)
+    slop (3.6.0)
 
 PLATFORMS
   ruby
@@ -43,4 +50,5 @@ DEPENDENCIES
   awesome_print
   dynect!
   faker
+  pry
   rspec
