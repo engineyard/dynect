@@ -21,8 +21,11 @@ module Dynect::Collection
     self.class.instance_variable_get(:@model_request)
   end
 
-  def get(opts)
-    result = connection.send(self.model_request, {'zone' => opts[:zone], 'fqdn' => opts[:fqdn]})
+  def get(options)
+    result = connection.send(self.model_request, {
+      'zone' => options.fetch(:zone),
+      'fqdn' => options.fetch(:fqdn),
+    })
 
     new(result.body['data'])
   end
