@@ -5,8 +5,8 @@ class Dynect::Client
       fqdn = params['fqdn']
 
       request(
-        :method   => 'DELETE',
-        :path     => "/REST/CNAMERecord/#{zone}/#{fqdn}"
+        :method => :delete,
+        :path   => "/REST/CNAMERecord/#{zone}/#{fqdn}"
       )
     end
   end

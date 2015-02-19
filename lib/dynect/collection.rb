@@ -23,12 +23,7 @@ module Dynect::Collection
 
   def get(opts)
     result = connection.send(self.model_request, {'zone' => opts[:zone], 'fqdn' => opts[:fqdn]})
-    if result.successful?
-      new(result.body['data'])
-    else
-      nil
-    end
-  rescue Dynect::Error
-    nil
+
+    new(result.body['data'])
   end
 end

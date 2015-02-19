@@ -2,9 +2,9 @@ class Dynect::Client
   class Real
     def get_token(params={})
       request(
-        params: params,
-        path:   '/REST/Session',
-        method: 'GET'
+        :params => params,
+        :path   => '/REST/Session',
+        :method => :get,
       )
     end
   end

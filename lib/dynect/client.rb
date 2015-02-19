@@ -4,47 +4,50 @@ class Dynect::Client < Cistern::Service
 
   model      :cname
   request    :create_token
+  request    :get_token
   request    :get_cname
   request    :create_cname
   request    :destroy_cname
   request    :publish_zone
   collection :cnames
 
-  requires :customer_name, :user_name, :password
+  requires :customer_name, :username, :password
+
+  recognizes :logger, :adapter
 
   class Real
-    attr_reader :connection
+    attr_reader :connection, :password, :username, :customer_name, :url
     attr_accessor :token
 
-    def initialize(opts = {})
-      @url = 'https://api2.dynect.net/'
-      @token = false
-
-      @customer_name = opts[:customer_name]
-      @user_name = opts[:user_name]
-      @password = opts[:password]
+    def initialize(options = {})
+      @url           = 'https://api2.dynect.net/'
+      @token         = false
+      @customer_name = options[:customer_name]
+      @username      = options[:username]
+      @password      = options[:password]
+      logger         = options[:logger] || Logger.new(nil)
 
       @connection = Faraday.new do |faraday|
         faraday.use Faraday::Response::RaiseError
-        faraday.use Faraday::Response::Logger
+        faraday.use Dynect::Session, self
+        faraday.use Ey::Logger::Faraday, prefix: "dynect", format: :machine, device: logger
 
         faraday.response :json
         faraday.request :json
-        faraday.adapter Faraday.default_adapter
+        faraday.adapter(*(options[:adapter] || Faraday.default_adapter))
       end
-
-      refresh_token
     end
 
     def request(options={})
-      method = (options[:method] || 'get').to_s.downcase.to_sym
-      url = Addressable::URI.parse(options[:url] || File.join(@url.to_s, options[:path] || "/"))
-      url.query_values = (url.query_values || {}).merge(options[:query] || {})
+      method = options[:method] || :get
+      url    = options[:url] || File.join(@url.to_s, options[:path] || "/")
       params = options[:params] || {}
-      body = options[:body]
+      body   = options[:body]
 
-      headers = {'Accept' => 'application/json','Content-Type' => 'application/json'}.merge(options[:headers] || {})
-      headers.merge!('Auth-Token' => @token) if @token
+      headers = {
+        'Accept'       => 'application/json',
+        'Content-Type' => 'application/json'
+      }.merge(options[:headers] || {})
 
       response = @connection.send(method) do |req|
         req.url(url.to_s)
@@ -65,67 +68,27 @@ class Dynect::Client < Cistern::Service
         }
       )
     end
-
-    def refresh_token
-      begin
-        return if get_token.status == 200
-      rescue Faraday::ResourceNotFound, Faraday::ClientError
-        response = create_token({
-          'customer_name' => @customer_name,
-          'user_name' => @user_name,
-          'password' => @password
-        }).body
-
-        unless response['data']['token']
-           Rails.logger.error {'Failed to get dynect token!'}
-           raise 'Failed to get dynect token!'
-        end
-
-        @token = response['data']['token']
-      else
-        Rails.logger.error {'Failed to get dynect token!'}
-        raise 'unable to create dynect token!'
-      end
-    end
-
-    def get_token(params={})
-      request(
-        params: params,
-        path:   '/REST/Session',
-        method: 'GET'
-      )
-    end
   end
 
   class Mock
     attr_reader :connection
     attr_accessor :token
 
-    def initialize(opts={})
-      @url = opts[:url] || "http://fake-dyn-api.localhost"
+    def initialize(options={})
+      @url = options[:url] || "http://fake-dyn-api.localhost"
 
-      @customer_name = opts[:customer_name]
-      @user_name = opts[:user_name]
-      @password = opts[:password]
-
-      refresh_token
-    end
-
-    def refresh_token
-      response = create_token({
-        'customer_name' => @customer_name,
-        'user_name' => @user_name,
-        'password' => @password
-      }).body
-
-      @token = response['data']['token']
+      @customer_name = options[:customer_name]
+      @username      = options[:username]
+      @password      = options[:password]
     end
 
     def self.data
-      @data ||= {
-        cnames: {},
-        tokens: []
-       }
+      @data ||= Hash.new { |h, url|
+        h[url] = {
+          :cnames => {},
+          :tokens => [],
+        }
+      }
     end
 
     def self.reset!
@@ -159,13 +122,5 @@ class Dynect::Client < Cistern::Service
         }
       )
     end
-  end
-end
-
-class Dynect::Error < StandardError
-  attr_reader :response
-
-  def initialize(response)
-    @response = response
   end
 end

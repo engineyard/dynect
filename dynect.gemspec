@@ -15,8 +15,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Dynect::VERSION
 
-  gem.add_dependency "faraday", "~> 0.9"
+  gem.add_dependency "cistern",            "~> 0.11"
+  gem.add_dependency "ey-logger",          "~> 0.0"
+  gem.add_dependency "faraday",            "~> 0.9"
   gem.add_dependency "faraday_middleware", "~> 0.9"
-  gem.add_dependency "cistern"
-  gem.add_dependency "addressable", "~> 2.2"
 end

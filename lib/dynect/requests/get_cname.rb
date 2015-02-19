@@ -1,10 +1,9 @@
 class Dynect::Client
   class Real
     def get_cname(params={})
-      refresh_token
 
-      fqdn = params['fqdn']
-      zone = params['zone']
+      fqdn = params.fetch('fqdn')
+      zone = params.fetch('zone')
 
       request(
         :path => "/REST/CNAMERecord/#{zone}/#{fqdn}/0/", # @fixme?

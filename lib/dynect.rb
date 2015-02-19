@@ -1,18 +1,21 @@
-require 'addressable/uri'
+require_relative 'dynect/version'
+
 require 'cistern'
 require 'json'
 require 'faraday'
 require 'faraday_middleware'
-require 'securerandom'
-require 'logger'
+require 'ey/logger'
+require 'ey/logger/faraday'
 
-require_relative 'dynect/version'
-require_relative 'dynect/client'
+require 'logger'
+require 'securerandom'
+
+module Dynect; end
+
 require_relative 'dynect/collection'
 require_relative 'dynect/response'
+require_relative 'dynect/session'
+require_relative 'dynect/client'
 
-module Dynect
-  DEFAULT_TIMEOUT = 30
-end
 
-Cistern.timeout = Dynect::DEFAULT_TIMEOUT
+Dynect::Client::Real.timeout = 30

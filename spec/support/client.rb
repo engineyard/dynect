@@ -1,9 +1,9 @@
 module ClientHelper
   def create_client(attributes={})
     merged_attributes = attributes.merge(
-      user_name: 'engineyard',
-      customer_name: 'someone',
-      password: 'password'
+      :username      => 'engineyard',
+      :customer_name => 'someone',
+      :password      => 'password',
     )
 
     Dynect::Client.new(merged_attributes)

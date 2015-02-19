@@ -1,15 +1,14 @@
 class Dynect::Client
   class Real
     def publish_zone(params={})
-      refresh_token
 
       zone = params['zone']
       data = {"publish" => "true"}
 
       request(
-        body:   data.to_json,
-        path:   "/REST/Zone/#{zone}",
-        method: 'PUT'
+        :body   => data,
+        :path   => "/REST/Zone/#{zone}",
+        :method => :put,
       )
     end
   end

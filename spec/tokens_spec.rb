@@ -10,7 +10,6 @@ describe 'tokens' do
   it 'can refresh its token' do
     client.token = nil
 
-    client.refresh_token
 
     expect(client.token).to be
   end

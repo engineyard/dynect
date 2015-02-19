@@ -1,16 +1,15 @@
 class Dynect::Client
   class Real
     def create_cname(params={})
-      refresh_token
 
       fqdn = "#{params['fqdn']}."
       zone = params['zone']
       target = "#{params['target']}."
 
       request(
-        body:   {"rdata" => {"cname" => target}}.to_json,
-        path:   "/REST/CNAMERecord/#{zone}/#{fqdn}",
-        method: 'POST'
+        :body   => {"rdata" => {"cname" => target}},
+        :path   => "/REST/CNAMERecord/#{zone}/#{fqdn}",
+        :method => :post,
       )
     end
   end
